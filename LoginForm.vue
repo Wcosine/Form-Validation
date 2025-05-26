@@ -1,8 +1,9 @@
-<!-- 這是試錯版本 v1 -->
+<!-- 這是v2版本 -->
+<!-- v1版本會及時跳出錯誤訊息, 使用者體驗感官較不友善 -->
 
 <script setup>
 import FormInput from './FormInput.vue';
-import { ref, defineEmits, computed } from 'vue';
+import { ref, defineEmits } from 'vue';
 
 const emit = defineEmits(['submitForm'])
 // 定義我要使用的功能名稱
@@ -10,6 +11,8 @@ const emit = defineEmits(['submitForm'])
 const email = ref('')
 const password = ref('')
 // 動態帶入我輸入的值
+const emailError = ref('')
+const passwordError = ref('')
 
 const isVaildEmail = (email) =>{
   const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -17,25 +20,24 @@ const isVaildEmail = (email) =>{
   return pattern.test(email)
   //這是一個function, 要記得return才會回傳測試結果
 }
-const emailError = computed(()=>{
-  if(email.value === '') return "請輸入電子郵件" 
-  if(!isVaildEmail(email.value)) return "電子郵件格式錯誤" 
-  // email.value會帶入function 的email
-  return ''
-  // 沒有錯誤訊息就是驗證通過
-})
-
-const passwordError = computed(()=>{
-  if(password.value === '') return "請輸入密碼" 
-  if(password.value.length < 6) return "密碼至少需6位數" 
-  return ''
-  // 沒有錯誤訊息就是驗證通過
-})
 
 const submitForm = () =>{
+  emailError.value = ''
+  passwordError.value = ''
+  // 將先前填寫錯誤的訊息清空, 才不會導致錯誤
+  
+  if(email.value === ''){
+    emailError.value = '請輸入郵件'
+  } else if(!isVaildEmail(email.value)){
+    emailError.value = '請輸入正確格式'
+  }
+  if(password.value === ''){
+    passwordError.value = '請輸入密碼'
+  } else if(password.value.length < 6){
+    passwordError.value = '密碼長度至少6字'
+  }
   if(emailError.value === '' && passwordError.value === ''){
-  // 郵件或是密碼皆為'空值'的時候登入成功
-    alert('登入成功')
+    alert ('登入成功')
     email.value = ''
     password.value = ''
   }
