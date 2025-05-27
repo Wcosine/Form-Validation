@@ -1,18 +1,17 @@
-<!-- 這是v3版本 -->
+<!-- 這是v4版本 -->
 
 <script setup>
-import {ref} from 'vue'
+import {ref, reactive} from 'vue'
 import FormInput from './FormInput.vue';
 
-const userName = ref('')
-const email = ref('')
-const password = ref('')
-const passwordConfirm = ref('')
-const userNameError = ref('')
-const emailError = ref('')
-const passwordError = ref('')
-const passwordConfirmError = ref('')
+// 將之前的ref簡化成reactive物件操控
 const checkPasswordStrength = ref('')
+const form = reactive({
+  userName: '',email: '',password: '',passwordConfirm: ''
+})
+const error = reactive({
+  userNameError: '',emailError: '',passwordError: '',passwordConfirmError: ''
+})
 
 // 設定驗證條件
 const isVaildEmail = (email) =>{
@@ -41,9 +40,9 @@ const isMediumPassword = (pwd) =>{
   // 沒有return 會回傳undefined
 }
 const PasswordStrength = () =>{
-  if(isStrongPassword(password.value)){
+  if(isStrongPassword(form.password)){
     checkPasswordStrength.value = "高強度密碼"
-  } else if (isMediumPassword(password.value)){
+  } else if (isMediumPassword(form.password)){
     checkPasswordStrength.value = "中強度密碼"
   } else {
     checkPasswordStrength.value = "強度不足"
@@ -54,41 +53,41 @@ const PasswordStrength = () =>{
 // 設定驗證錯誤顯示訊息
 // 將驗證邏輯分離更好維護
 const validateUser = () =>{
-  if(userName.value === ""){
-    userNameError.value = "請輸入使用者名稱"
-  } else if(userName.value.length < 5 ){
-    userNameError.value = '使用者名稱至少5字'
-  } else if(isEnglishOnly(userName.value)){
-    userNameError.value = '使用者名稱僅能為英文字母'
+  if(form.userName === ""){
+    error.userNameError = "請輸入使用者名稱"
+  } else if(form.userName.length < 5 ){
+    error.userNameError = '使用者名稱至少5字'
+  } else if(isEnglishOnly(form.userName)){
+    error.userNameError = '使用者名稱僅能為英文字母'
   } else {
-    userNameError.value = ""
+    error.userNameError = ""
   }
 }
 const validateEmail = () =>{
-  if(email.value === ""){
-    emailError.value = "請輸入郵件"
-  } else if(!isVaildEmail(email.value)){
-    emailError.value = '請輸入正確格式'
+  if(form.email === ""){
+    error.emailError = "請輸入郵件"
+  } else if(!isVaildEmail(form.email)){
+    error.emailError = '請輸入正確格式'
   } else {
-    emailError.value = ""
+    error.emailError = ""
   }
 }
 const validatePassword = () =>{
-  if(password.value === ""){
-    passwordError.value = "請輸入密碼"
-  } else if(password.value.length < 6){
-    passwordError.value = '密碼長度至少6字'
+  if(form.password === ""){
+    error.passwordError = "請輸入密碼"
+  } else if(form.password.length < 6){
+    error.passwordError = '密碼長度至少6字'
   } else {
-    passwordError.value = ""
+    error.passwordError = ""
   }
 }
 const validatePasswordConfirm = () =>{
-  if(password.value === ""){
-    passwordConfirmError.value = "再次輸入密碼"
-  } else if (passwordConfirm.value !== password.value){
-    passwordConfirmError.value = "請確認密碼是否一致"
+  if(form.password === ""){
+    error.passwordConfirmError = "再次輸入密碼"
+  } else if (form.passwordConfirm !== form.password){
+    error.passwordConfirmError = "請確認密碼是否一致"
   } else {
-    passwordConfirmError.value = ""   // 清空錯誤值
+    error.passwordConfirmError = ""   // 清空錯誤值
     PasswordStrength()   // 執行強度判斷
   }
 }
@@ -99,24 +98,24 @@ const confirmRegister = () =>{
   validateEmail()
   validatePassword()
   validatePasswordConfirm()
-  if(userNameError.value === "" &&
-     emailError.value === "" && 
-     passwordError.value === "" &&
-     passwordConfirmError.value === "" 
+  if(error.userNameError === "" &&
+     error.emailError === "" && 
+     error.passwordError === "" &&
+     error.passwordConfirmError === "" 
      ){
     alert ('成功註冊') 
     reset()
   }
 }
 const reset = () =>{
-  userName.value = ""
-  email.value = ""
-  password.value = ""
-  passwordConfirm.value = ""
-  userNameError.value = ""
-  emailError.value = ""
-  passwordError.value = ""
-  passwordConfirmError.value = ""
+  form.userName = ""
+  form.email = ""
+  form.password = ""
+  form.passwordConfirm = ""
+  error.userNameError= ""
+  error.emailError= ""
+  error.passwordError= ""
+  error.passwordConfirmError= ""
 }
 
 </script>
@@ -128,30 +127,31 @@ const reset = () =>{
       <label class="register-item">
         使用者名稱
         <input type="text"  placeholder="須包含英文及數字" 
-        v-model="userName" @input="userName = userName.replace(/[^A-Za-z0-9]/g, '')"/>
+        v-model="form.userName" @input="form.userName = form.userName.replace(/[^A-Za-z0-9]/g, '')"/>
+        <!-- .replace 置換 -->
       </label>
       <!-- 控制輸入的內容僅能為英文及數字, 註1 -->
-      <p v-if="userNameError" style="color:red">{{userNameError}}</p>
+      <p v-if="error.userNameError" style="color:red">{{error.userNameError}}</p>
     </template>
     <template #email>
-      <label class="register-item"> 電子郵件 <input type="email" v-model="email"/></label>
-      <p v-if="emailError" style="color:red">{{emailError}}</p>
+      <label class="register-item"> 電子郵件 <input type="email" v-model="form.email"/></label>
+      <p v-if="error.emailError" style="color:red">{{error.emailError}}</p>
     </template>
     <template #password>
       <label class="register-item">
         密碼
-        <input type="password" v-model="password" @input="PasswordStrength"/>
+        <input type="password" v-model="form.password" @input="PasswordStrength"/>
         <!-- @input 當我觸發input事件的時候, 即時更新條件結果 -->
         </label>
-      <p v-if="passwordError" style="color:red">{{passwordError}}</p>
+      <p v-if="error.passwordError" style="color:red">{{error.passwordError}}</p>
       <p v-if="checkPasswordStrength" style="color:#ccc">{{checkPasswordStrength}}</p>
     </template>
     <template #confirmPassword>
       <label class="register-item">
         確認密碼
-        <input type="password" v-model="passwordConfirm" @input="validatePasswordConfirm"/>
+        <input type="password" v-model="form.passwordConfirm" @input="validatePasswordConfirm"/>
         </label>
-      <p v-if="passwordConfirmError" style="color:red">{{passwordConfirmError}}</p>
+      <p v-if="error.passwordConfirmError" style="color:red">{{error.passwordConfirmError}}</p>
     </template>
     <template #footer>
       <button @click="confirmRegister">確認註冊</button>
