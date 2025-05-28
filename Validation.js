@@ -18,7 +18,7 @@ export default function useValidation(){
       errors.value.name = "請輸入使用者名稱"
       return false
     }
-    const valid = /^[a-zA-Z0-9]+$/.test(name)
+    const valid = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/.test(name)
     errors.value.name = name ? "": "名稱須包含英文及數字"
     return valid
   } 
@@ -62,3 +62,4 @@ export default function useValidation(){
   }
   // 這裡是回傳物件, 要用在父組件當中
 }
+
