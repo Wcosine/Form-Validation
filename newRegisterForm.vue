@@ -2,9 +2,10 @@
 <!-- 配合Validation.js -->
 <!-- 這是v2版本 -->
 
+<!--這是newRegisterForm.vue-->
 <script setup>
 import baseInput from './baseInput.vue';
-import Validation from './Validation.js' // 這是被導入用於驗證的功能包
+import Validation from './Validation.js'
 import {reactive, ref} from 'vue';
 
 const form = reactive({
@@ -35,9 +36,9 @@ const handleSubmit = () => {
   const isNameValid = validateName(form.name)
   const isEmailValid = validateEmail(form.email)
   const isPasswordValid = validatePassword(form.password)
-  const isPasswordConfirmValid = validatePasswordConfirm(form.passwordConfirm)
-  // 這裡即是傳入函數物件的用法, isNameValid就是儲存驗證結果的變數, 值為布林值
-  // 宣告變數, 值為form.name使用Validation驗證後結果
+  const isPasswordConfirmValid = validatePasswordConfirm(form.passwordConfirm, form.password)
+  // 因為要比對兩者, 所以需傳兩個函數值才能進行驗證
+  // 這裡即是傳入函數的用法, isNameValid就是儲存驗證結果的變數, 值為布林值
 
   if(isNameValid && isEmailValid && isPasswordValid && isPasswordConfirmValid){
     successMessage.value = '成功註冊'
@@ -45,7 +46,6 @@ const handleSubmit = () => {
     errorMessage.value = '請修正錯誤欄位'
   }
 }
-// 
 
 </script>
 
