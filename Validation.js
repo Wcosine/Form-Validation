@@ -50,7 +50,7 @@ export default function useValidation(){
       return true
     }
   const validatePasswordConfirm = (pswConfirm, psw) =>{
-    if(pswConfirm != psw ) {
+    if(pswConfirm !== psw ) {
       errors.value.passwordConfirm = "請確認密碼是否一致"
       return false
     }
