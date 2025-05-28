@@ -19,8 +19,13 @@ export default function useValidation(){
       return false
     }
     const valid = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/.test(name)
-    errors.value.name = name ? "": "名稱須包含英文及數字"
-    return valid
+    if(!valid ) {
+      errors.value.name = "名稱須包含英文及數字"
+      return false
+    }
+    errors.value.name = ""
+    // 這是清空錯誤訊息避免影響判斷
+    return true
   } 
   const validateEmail = (email) => {
     if(!email) {
@@ -44,8 +49,8 @@ export default function useValidation(){
       errors.value.password = ""
       return true
     }
-  const validatePasswordConfirm = (pswConfirm) =>{
-    if(!pswConfirm) {
+  const validatePasswordConfirm = (pswConfirm, psw) =>{
+    if(pswConfirm != psw ) {
       errors.value.passwordConfirm = "請確認密碼是否一致"
       return false
     }
