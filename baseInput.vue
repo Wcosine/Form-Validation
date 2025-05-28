@@ -1,5 +1,5 @@
 <!-- 這個是將input欄位獨立為元件的檔案, 且不使用slot的製作方式 -->
-<!-- 這是v1版本, 配合newRegiterForm.vue -->
+<!-- 這是v2版本, 配合newRegiterForm.vue -->
 
 <script setup>
 import {defineProps, defineEmits} from 'vue'
@@ -10,7 +10,9 @@ const prop = defineProps({
     type: String,
     default: 'text',
   },
-  modelValue: String
+  modelValue: String,
+  error: String
+  // 這個是儲存顯示錯誤訊息的值
 })
 // 由父組件控制值
 
@@ -32,6 +34,8 @@ const updateValue = (e) =>{
     :value="modelValue"
     @input="updateValue"/>
     <!--當有input資料更新的時候觸發emit-->
+    <p v-if="error" class="error">{{error}}</p>
+    <!-- 當error有值就顯示 -->
   </label>
 </template>
 
