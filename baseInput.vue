@@ -48,4 +48,10 @@ const updateValue = (e) =>{
 input{
   margin-left: 12px;
 }
+.error{
+  margin: 0;
+  margin-left: 12px;
+  color: red;
+  /* 這是錯誤訊息顯示的樣式控制 */
+}
 </style>
