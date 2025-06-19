@@ -1,4 +1,3 @@
-<!--這是v1版本-->
 <script setup>
 import {ref, computed} from 'vue'
 import RegisterForm from './RegisterForm.vue';
